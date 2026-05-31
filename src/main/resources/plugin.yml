@@ -1,13 +1,15 @@
 name: PhantomReducer
-version: '1.2'
+version: '${project.version}'
 main: org.karlssonsmp.phantomReducer.PhantomReducer
-api-version: '1.18'
+api-version: '26.1.2'
 folia-supported: true
 
 commands:
   phantomreducer:
     description: Reload PhantomReducer configuration
     usage: /phantomreducer reload
+    permission: phantomreducer.reload
+    permission-message: "§9§lᴘʜᴀɴᴛᴏᴍʀᴇᴅᴜᴄᴇʀ §7» §cYou don't have permission to do that."
 
 permissions:
   phantomreducer.reload:

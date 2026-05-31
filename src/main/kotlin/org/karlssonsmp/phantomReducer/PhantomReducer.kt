@@ -13,22 +13,31 @@ import org.bstats.bukkit.Metrics
 
 class PhantomReducer : JavaPlugin(), Listener {
 
+    private companion object {
+        private val ALLOWED_SPAWN_REASONS = setOf(
+            CreatureSpawnEvent.SpawnReason.NATURAL,
+            CreatureSpawnEvent.SpawnReason.PATROL
+        )
+
+        private const val DEFAULT_SPAWN_RATE = 0.25
+        private const val BSTATS_PLUGIN_ID = 26992
+    }
+
     @Volatile
-    private var spawnRate: Double = 0.25
+    private var spawnRate: Double = DEFAULT_SPAWN_RATE
 
     private val prefix = "§9§lᴘʜᴀɴᴛᴏᴍʀᴇᴅᴜᴄᴇʀ §7» §r"
 
     override fun onEnable() {
         saveDefaultConfig()
 
-        spawnRate = config.getDouble("phantom-spawn-rate", 0.25).coerceIn(0.0, 1.0)
+        spawnRate = loadSpawnRate()
         val metricsEnabled = config.getBoolean("metrics", true)
 
         server.pluginManager.registerEvents(this, this)
 
         if (metricsEnabled) {
-            val pluginId = 26992
-            Metrics(this, pluginId)
+            Metrics(this, BSTATS_PLUGIN_ID)
         }
 
         logger.info("PhantomReducer enabled! Phantom spawn rate set to ${(spawnRate * 100).toInt()}%.")
@@ -42,14 +51,9 @@ class PhantomReducer : JavaPlugin(), Listener {
     fun onPhantomSpawn(event: CreatureSpawnEvent) {
         if (event.entityType != EntityType.PHANTOM) return
 
-        val validReasons = setOf(
-            CreatureSpawnEvent.SpawnReason.NATURAL,
-            CreatureSpawnEvent.SpawnReason.PATROL
-        )
+        if (event.spawnReason !in ALLOWED_SPAWN_REASONS) return
 
-        if (event.spawnReason !in validReasons) return
-
-        if (ThreadLocalRandom.current().nextDouble() > spawnRate) {
+        if (ThreadLocalRandom.current().nextDouble() >= spawnRate) {
             event.isCancelled = true
         }
     }
@@ -63,7 +67,7 @@ class PhantomReducer : JavaPlugin(), Listener {
                 }
 
                 reloadConfig()
-                spawnRate = config.getDouble("phantom-spawn-rate", 0.25).coerceIn(0.0, 1.0)
+                spawnRate = loadSpawnRate()
                 sender.sendMessage("${prefix}§aConfig reloaded! Spawn rate: ${(spawnRate * 100).toInt()}%")
                 return true
             } else {
@@ -73,4 +77,7 @@ class PhantomReducer : JavaPlugin(), Listener {
         }
         return false
     }
+
+    private fun loadSpawnRate(): Double =
+        config.getDouble("phantom-spawn-rate", DEFAULT_SPAWN_RATE).coerceIn(0.0, 1.0)
 }

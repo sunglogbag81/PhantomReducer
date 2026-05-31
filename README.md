@@ -2,9 +2,11 @@
 
 ![Modrinth](https://img.shields.io/modrinth/v/d5YylCDk)
 
-PhantomReducer lets you control how often phantoms spawn, whether you want peaceful nights or no phantoms at all, the choice is yours.
+PhantomReducer lets you control how often phantoms spawn. Whether you want peaceful nights or no phantoms at all, the choice is yours.
 
-In vanilla Minecraft, the longer you don't sleep, the higher the chance phantoms will spawn, about 25% after 4 days and around 40% by day 5. PhantomLimiter filters vanilla phantom spawns, reducing them by your chosen spawn rate.
+In vanilla Minecraft, the longer you don't sleep, the higher the chance phantoms will spawn, about 25% after 4 days and around 40% by day 5. PhantomReducer filters vanilla phantom spawns, reducing them by your chosen spawn rate.
+
+Built against Paper API 26.1.2.
 
 **Example:**
 - In vanilla Minecraft on day 5, phantoms might have a 40% chance to spawn.
